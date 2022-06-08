@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const usersController = require('../../controllers/usersController')
+const {protect} = require('../../middleware/authMiddleware')
 
 router.route('/')
     .get(usersController.findAllUsers)
@@ -7,12 +8,8 @@ router.route('/')
 
 router.route('/login')
     .post(usersController.loginUser)
-// router.post('/', (req,res) => {
-//     res.send('register route')
-// })
 
-// router.post('/login', (req,res) => {
-//     res.send('login route')
-// })
+router.route('/me')
+    .get(protect, usersController.getMe)
 
 module.exports = router

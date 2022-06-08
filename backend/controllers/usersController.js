@@ -65,7 +65,7 @@ module.exports = {
     }),
 
     // @desc Login a new user
-    // @route /api/users/login
+    // @route POST /api/users/login
     // @acess Public
     loginUser: asyncHandler( async(req,res) => {
         const {email, password} = req.body
@@ -84,5 +84,17 @@ module.exports = {
             res.status(401)
             throw new Error('Invalid credentials')
         }
+    }),
+
+    // @desc Get current user
+    // @route GET /api/users/me
+    // @acess Private
+    getMe: asyncHandler( async(req,res) => {
+        const user = {
+            id: req.user._id,
+            email: req.user.email,
+            name: req.user.name
+        }
+        res.status(200).json(user)
     })
 };
