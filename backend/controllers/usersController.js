@@ -1,6 +1,14 @@
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler')
+const jwt = require('jsonwebtoken')
 const db = require('../models')
+
+// When log in or register... call this function --> and get token back
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
 
 module.exports = {
     // @desc Get all users
@@ -10,7 +18,6 @@ module.exports = {
         const data = await db.User.find({ })
         res.status(200).json(data)
     }),
-
 
     // @desc Register a new user
     // @route POST /api/users
@@ -47,7 +54,8 @@ module.exports = {
             res.status(201).json({
                 _id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                token: generateToken(user._id)
             })
         }
         else {
@@ -60,6 +68,21 @@ module.exports = {
     // @route /api/users/login
     // @acess Public
     loginUser: asyncHandler( async(req,res) => {
-        res.send('Login User')
+        const {email, password} = req.body
+
+        const user = await db.User.findOne({email})
+
+        if(user && (await bcrypt.compare(password, user.password))) {
+            res.status(200).json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token: generateToken(user._id)
+            })
+        }
+        else {
+            res.status(401)
+            throw new Error('Invalid credentials')
+        }
     })
 };
