@@ -81,8 +81,8 @@ module.exports = {
             })
         }
         else {
-            res.status(401)
-            throw new Error('Invalid credentials')
+            res.status(401);
+            throw new Error('Invalid credentials');
         }
     }),
 
