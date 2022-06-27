@@ -18,6 +18,11 @@ app.get('/', (req,res) => {
 })
 
 const routes = require('./routes')
+
+// Routes
 app.use(routes)
+
+// middleware
+app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`))
