@@ -73,5 +73,62 @@ module.exports = {
         })
 
         res.status(201).json(ticket)
-    })
+    }),
+
+    // @desc Delete ticket
+    // @route DELETE /api/tickets/:id
+    // @access Private
+    deleteTicket: asyncHandler( async(req,res) => {
+        const user = await db.User.findById(req.user.id)
+
+        if(!user) {
+            res.status(401)
+            throw new Error('User not found')
+        }
+
+        const ticket = await db.Ticket.findById(req.params.id)
+
+        if(!ticket){
+            res.status(404)
+            throw new Error('Ticket Not found')
+        }
+
+        if(ticket.user.toString() !== req.user.id) {
+            res.status(401)
+            throw new Error('Not Authorized')
+        }
+
+        await db.Ticket.remove()
+
+
+        res.status(200).json({ succes: true })
+    }),
+
+    // @desc update ticket
+    // @route PUT /api/tickets/:id
+    // @access Private
+    updateTicket: asyncHandler( async(req,res) => {
+        const user = await db.User.findById(req.user.id)
+
+        if(!user) {
+            res.status(401)
+            throw new Error('User not found')
+        }
+
+        const ticket = await db.Ticket.findById(req.params.id)
+
+        if(!ticket){
+            res.status(404)
+            throw new Error('Ticket Not found')
+        }
+
+        if(ticket.user.toString() !== req.user.id) {
+            res.status(401)
+            throw new Error('Not Authorized')
+        }
+
+        const updatedTicket = await db.Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true })
+
+        res.status(200).json(updatedTicket)
+    }),
 }

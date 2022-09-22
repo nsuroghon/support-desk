@@ -8,5 +8,7 @@ router.route('/')
 
 router.route('/:id')
     .get(protect, ticketsController.getTicket)
+    .delete(protect, ticketsController.deleteTicket)
+    .put(protect, ticketsController.updateTicket)
 
 module.exports = router
