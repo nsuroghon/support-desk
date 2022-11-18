@@ -24,7 +24,7 @@ const routes = require('./routes')
 app.use(routes)
 
 // serve front end
-if(process.env.node_env === 'production'){
+if(process.env.NODE_ENV === 'production'){
     // set build folder as static
     app.use(express.static(path.join(__dirname, '../frontend/build')))
 
